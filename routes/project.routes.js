@@ -2,6 +2,8 @@ const router = require("express").Router();
 
 const mongoose = require('mongoose');
 
+const {isAuthenticated} = require("../middleware/jwt.middleware")
+
 const Project = require('../models/Project.model');
 const Task = require('../models/Task.model');
 
@@ -19,7 +21,7 @@ router.get('/projects', (req, res, next) => {
 
 
 //CREATE new project
-router.post('/projects', (req, res, next) => {
+router.post('/projects', isAuthenticated, (req, res, next) => {
     const { title, description } = req.body;
 
     Project.create({ title, description, tasks: [] })
@@ -50,7 +52,7 @@ router.get('/projects/:projectId', (req, res, next) => {
 
 
 //UPDATE project
-router.put('/projects/:projectId', (req, res, next) => {
+router.put('/projects/:projectId', isAuthenticated, (req, res, next) => {
     const { projectId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(projectId)) {
@@ -66,7 +68,7 @@ router.put('/projects/:projectId', (req, res, next) => {
 
 
 //DELETE project
-router.delete('/projects/:projectId', (req, res, next) => {
+router.delete('/projects/:projectId', isAuthenticated, (req, res, next) => {
     const { projectId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(projectId)) {
